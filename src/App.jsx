@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import Home from './pages/root/home'
 import Login from './pages/auth/Login'
 import Signup from './pages/auth/signup'
+import LoanCalculator from './components/LoanCalculator'
 
 function App() {
 
@@ -10,6 +11,7 @@ function App() {
    <BrowserRouter>
     <Routes>
       <Route path='/' element={<Home />}></Route>
+      <Route path='/loan-calculator' element={<LoanCalculator />} />
 
       {/* Auth Routes */}
       <Route path='/auth'>
