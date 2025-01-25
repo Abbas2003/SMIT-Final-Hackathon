@@ -1,11 +1,16 @@
-import React from "react";
-import { Form, Input, Button, Card, Typography } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Button, Card, Typography, Spin } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
 const Login = () => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
-  };
+    const [loading, setLoading] = useState(false);
+    const [credentials, setCredentials] = useState("");
+    const onFinish = (values) => {
+        setLoading(true);
+        console.log("Success:", values);
+        setCredentials(values);
+        setLoading(false);
+      };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -60,14 +65,15 @@ const Login = () => {
               type="primary"
               htmlType="submit"
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 rounded-lg"
+              
             >
-              Login
+            {loading ? <Spin /> : "Login"}
             </Button>
           </Form.Item>
         </Form>
 
         <Typography.Text className="block text-center text-sm mt-4 text-gray-500">
-          Don't have an account? <a href="/register">Register here</a>
+          Don't have an account? <a href="/auth/sign-up">Register here</a>
         </Typography.Text>
       </Card>
     </div>
