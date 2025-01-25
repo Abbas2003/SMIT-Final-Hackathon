@@ -29,13 +29,13 @@ const Login = () => {
         // Redirect based on user role
         setTimeout(() => {
           if (user.role === "admin") {
-            navigate("/dashboard");
+            navigate("/admin-dashboard");
           } else if (user.role === "user") {
-            navigate("/dashboard");
+            navigate("/user-dashboard");
           } else {
             message.error("You are not authorized to login.");
           }
-        }, 1000);
+        }, 2300);
       } else {
         message.error("Login failed. Please check your credentials.");
       }

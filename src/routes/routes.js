@@ -11,10 +11,6 @@ export const AppRoutes = {
     register: BASE_URL + "api/v1/auth/register",
 
     // User Routes
-    getAllUsers: BASE_URL + "api/v1/user/all-users",
-    deleteUser: BASE_URL + "api/v1/user/:id",
-    addUser: BASE_URL + "api/v1/user/smit-registration",
-    updateUser: BASE_URL + "api/v1/user/:id",
-    getSingleUser: BASE_URL + "api/v1/user/single-user",
+    getMyInfo: BASE_URL + "api/v1/user/get-my-info",
 
 };

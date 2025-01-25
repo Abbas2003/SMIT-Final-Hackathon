@@ -1,20 +1,20 @@
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router'
 import Cookies from "js-cookie";
 import Home from './pages/root/home'
 import Login from './pages/auth/Login'
 import Signup from './pages/auth/signup'
 import LoanCalculator from './components/LoanCalculator'
 import Dashboard from './pages/adminDashboard/Dashboard'
+import { useContext } from 'react';
+import { AuthContext } from './context/UserContext';
+import UserDashboard from './pages/userDashboard/Dashboard';
 
 function App() {
-  const getUser = () => {
-    const token = Cookies.get("token");
-    const decodedToken = jwt_decode(token);
-
-    console.log("Token:", decodedToken);
-  }
-  getUser();
+  
+  const {user} = useContext(AuthContext)
+  console.log("User=>", user);
+  
   return (
    <BrowserRouter>
     <Routes>
@@ -27,11 +27,18 @@ function App() {
         <Route path="sign-up" element={<Signup />} />
       </Route>
 
-      {/* Dashboard Routes */}
-      <Route path='/dashboard' element={<Dashboard />}>
+      {/* Admin Dashboard Routes */}
+      <Route path='/admin-dashboard' element={user?.role == "admin" ? <Dashboard /> : ""}>
         <Route index path="profile" element={<Home />} />
         <Route path="settings" element={<Home />} />
       </Route>
+
+      {/* User Dashboard Routes */}
+      <Route path='/user-dashboard' element={user?.role == "user" ? <UserDashboard /> : ""}>
+        <Route index path="profile" element={<Home />} />
+        <Route path="settings" element={<Home />} />
+      </Route>
+
     </Routes>
    </BrowserRouter>
   )

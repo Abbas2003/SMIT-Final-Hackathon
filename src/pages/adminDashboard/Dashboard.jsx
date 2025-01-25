@@ -3,7 +3,8 @@ import {
   Layout,
   Menu,
   Button,
-  Typography
+  Typography,
+  message
 } from "antd";
 import {
   MenuUnfoldOutlined,
@@ -13,11 +14,14 @@ import {
   DesktopOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router";
 
 const { Header, Sider, Content } = Layout;
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("dashboard");
 
   const toggleSidebar = () => {
@@ -33,7 +37,7 @@ const Dashboard = () => {
       case "reports":
         return <Typography.Title>Reports Content</Typography.Title>;
       default:
-        return <Typography.Title>Welcome!</Typography.Title>;
+        return <Typography.Title>Thank You!</Typography.Title>;
     }
   };
 
@@ -41,6 +45,12 @@ const Dashboard = () => {
     imageUrl: "currentUser.imageUrl", // Example image URL
     name: "currentUser.fullName",
     email: "currentUser.email",
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    message.success("Logout successful!");
+    navigate("/");
   };
 
   return (
@@ -83,45 +93,45 @@ const Dashboard = () => {
           <Menu.Item key="reports" icon={<DesktopOutlined />}>
             Reports
           </Menu.Item>
-          <Menu.Item key="logout" icon={<LogoutOutlined />}>
+          <Menu.Item key="logout" onClick={handleLogout} icon={<LogoutOutlined />}>
             Logout
           </Menu.Item>
         </Menu>
       </Sider>
 
       <Layout className="site-layout">
-      <Header
-  style={{
-    padding: "0 16px",
-    display: "flex",
-    alignItems: "center",
-    background: "#fff",
-    boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-  }}
->
-  {/* Toggle Sidebar Button */}
-  <Button type="text" onClick={toggleSidebar}>
-    {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-  </Button>
+        <Header
+          style={{
+            padding: "0 16px",
+            display: "flex",
+            alignItems: "center",
+            background: "#fff",
+            boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+          }}
+        >
+          {/* Toggle Sidebar Button */}
+          <Button type="text" onClick={toggleSidebar}>
+            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          </Button>
 
-  {/* App Title */}
-  <Typography.Title level={4} style={{ margin: 0 }}>
-    Dashboard
-  </Typography.Title>
+          {/* App Title */}
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            Admin Dashboard
+          </Typography.Title>
 
-  {/* User Info Button */}
-  <button
-    // onClick={handleUserMenuClick}
-    className="rounded-full p-2 bg-neutral-200 text-neutral-900 flex items-center"
-    style={{
-      width: "40px",
-      height: "40px",
-      borderRadius: "50%",
-      overflow: "hidden",
-      marginLeft: "auto", // Move button to the right side
-    }}
-  >
-    {/* {currentUser?.imageUrl ? (
+          {/* User Info Button */}
+          <button
+            // onClick={handleUserMenuClick}
+            className="rounded-full p-2 bg-neutral-200 text-neutral-900 flex items-center"
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              overflow: "hidden",
+              marginLeft: "auto", // Move button to the right side
+            }}
+          >
+            {/* {currentUser?.imageUrl ? (
       <img
         src={user.imageUrl}
         alt="User"
@@ -134,8 +144,8 @@ const Dashboard = () => {
     ) : (
       <span>{user.fullName[0].toUpperCase()}</span> // Fallback to first letter (uppercase)
     )} */}
-  </button>
-</Header>
+          </button>
+        </Header>
         <Content
           style={{
             margin: "16px",
