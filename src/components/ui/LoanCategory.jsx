@@ -30,7 +30,7 @@ const LoanCategories = () => {
   ];
 
   return (
-    <section>
+    <section className='text-black'>
         <div className='flex items-center justify-between my-5'>
             <div className='text-3xl font-bold'>Loan Categories</div>
             <div>
