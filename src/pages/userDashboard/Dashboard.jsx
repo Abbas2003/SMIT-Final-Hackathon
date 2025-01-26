@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Layout,
     Menu,
     Button,
-    Typography
+    Typography,
+    Spin,
+    message,
 } from "antd";
 import {
     MenuUnfoldOutlined,
@@ -20,42 +22,78 @@ import ViewRequest from "./Request";
 import UserProfile from "./Profile";
 import GuarantorAndPersonalDetails from "./Guarantor";
 import User from "./User";
+import Cookies from "js-cookie";
 import ApplicationForm from "./ApplicationForm";
+import { useNavigate } from "react-router";
 
 const { Header, Sider, Content } = Layout;
 
 const UserDashboard = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState("dashboard");
+    const [loading, setLoading] = useState(true); // Set loading to true initially
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    const toggleSidebar = () => {
-        setCollapsed(!collapsed);
+    useEffect(() => {
+        // Simulate data fetching or authentication check
+        const initializeDashboard = async () => {
+            if (!user) {
+                message.error("User not authenticated. Redirecting...");
+                navigate("/"); // Redirect to login if no user is found
+            } else {
+                setLoading(false); // Set loading to false after initialization
+            }
+        };
+
+        initializeDashboard();
+    }, [user, navigate]);
+
+    const toggleSidebar = () => setCollapsed(!collapsed);
+
+    const handleLogout = () => {
+        Cookies.remove("token");
+        message.success("Logout successful!");
+        navigate("/");
     };
 
     const renderContent = () => {
         switch (selectedMenu) {
             case "dashboard":
-                return <Typography.Title><User /></Typography.Title>;
+                return <User />;
             case "profile":
-                return <Typography.Title><UserProfile /></Typography.Title>;
+                return <UserProfile />;
             case "form":
-                return <Typography.Title><ApplicationForm /></Typography.Title>;
+                return <ApplicationForm />;
             case "guarantor":
-                return <Typography.Title><GuarantorAndPersonalDetails /></Typography.Title>;
+                return <GuarantorAndPersonalDetails />;
             case "request":
-                return <Typography.Title><ViewRequest /></Typography.Title>;
+                return <ViewRequest />;
             default:
                 return <Typography.Title>Welcome!</Typography.Title>;
         }
     };
 
-    const { user } = useContext(AuthContext)
-
     const currentUser = {
-        imageUrl: user.imageUrl, // Example image URL
-        name: user.fullName,
-        email: user.email,
+        imageUrl: user?.imageUrl || "",
+        name: user?.fullName || "Guest",
+        email: user?.email || "",
     };
+
+    if (loading) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                }}
+            >
+                <Spin size="large" tip="Loading Dashboard..." />
+            </div>
+        );
+    }
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
@@ -65,9 +103,7 @@ const UserDashboard = () => {
                 collapsed={collapsed}
                 breakpoint="sm"
                 collapsedWidth={0}
-                onBreakpoint={(broken) => {
-                    if (broken) setCollapsed(true);
-                }}
+                onBreakpoint={(broken) => broken && setCollapsed(true)}
                 style={{ background: "#001529" }}
             >
                 <div
@@ -103,7 +139,7 @@ const UserDashboard = () => {
                     <Menu.Item key="guarantor" icon={<UsergroupAddOutlined />}>
                         Guarantors Info
                     </Menu.Item>
-                    <Menu.Item key="logout" icon={<LogoutOutlined />}>
+                    <Menu.Item key="logout" onClick={handleLogout} icon={<LogoutOutlined />}>
                         Logout
                     </Menu.Item>
                 </Menu>
@@ -119,46 +155,44 @@ const UserDashboard = () => {
                         boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >
-                    {/* Toggle Sidebar Button */}
                     <Button type="text" onClick={toggleSidebar}>
                         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                     </Button>
-
-                    {/* App Title */}
                     <Typography.Title level={4} style={{ margin: 0 }}>
                         User Dashboard
                     </Typography.Title>
-
-                    {/* Move content to the right */}
-                    <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "10px" }}>
-                        {/* User Info */}
+                    <div
+                        style={{
+                            marginLeft: "auto",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                        }}
+                    >
                         <Typography.Text style={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-                            {currentUser?.name.toLocaleUpperCase()}
+                            {currentUser.name.toLocaleUpperCase()}
                         </Typography.Text>
-
-                        {/* Profile Picture */}
                         <div
-                            className="rounded-full bg-neutral-200 flex items-center justify-center"
                             style={{
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "50%",
                                 overflow: "hidden",
+                                background: "#ccc",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                             }}
                         >
-                            {currentUser?.imageUrl ? (
+                            {currentUser.imageUrl ? (
                                 <img
                                     src={currentUser.imageUrl}
                                     alt="User"
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                    }}
+                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                 />
                             ) : (
                                 <span style={{ fontWeight: "bold", color: "#555" }}>
-                                    {currentUser?.name?.[0]?.toUpperCase()}
+                                    {currentUser.name[0]?.toUpperCase()}
                                 </span>
                             )}
                         </div>
@@ -166,17 +200,14 @@ const UserDashboard = () => {
                 </Header>
                 <Content
                     style={{
-                        // margin: "16px",
                         padding: "16px",
                         background: "#fff",
-                        // borderRadius: "8px",
                         boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >
                     {renderContent()}
                 </Content>
             </Layout>
-
         </Layout>
     );
 };

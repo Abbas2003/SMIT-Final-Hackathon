@@ -83,7 +83,7 @@ export default function LoanCalculator() {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields(); // Validate fields before submission
-      console.log("Form values:", values);
+      // console.log("Form values:", values);
 
       const uniquePassword = generateRandomPassword(); // Generate a unique password for the user
 
@@ -152,11 +152,13 @@ export default function LoanCalculator() {
       console.log("Email sent:", res);
       const newUser = await axios.post(AppRoutes.register, {
           fullName: values.name,
-          email: values.email,
+          email: values.email.toLowerCase(),
           password: uniquePassword,
           cnic: values.cnic,
       }).then((res) => {
+         
         message.success("Form submitted successfully!");
+        message.success("An email has been sent to you with your account password.");
         setLoading(false);
       }).catch((err) => {
         message.error("User already requested before. Please try again later.");
@@ -221,7 +223,7 @@ export default function LoanCalculator() {
               <Paragraph>Total Payable: PKR {loanBreakdown.totalPayable.toFixed(2)}</Paragraph>
               <Paragraph>Monthly Installment: PKR {loanBreakdown.monthlyInstallment.toFixed(2)}</Paragraph>
             </div>
-            <Button style={{ width: "100%" }} type="primary" onClick={() => setIsModalVisible(true)}>Proceed</Button>
+            <Button style={{ width: "100%" }} type="primary" onClick={() => setIsModalVisible(true)}>Proceed to Application</Button>
           </>
         )}
       </Card>
