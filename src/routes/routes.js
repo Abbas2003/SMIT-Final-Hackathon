@@ -1,5 +1,5 @@
 const devUrl = "http://localhost:4000/";
-const prodUrl = "https://lmsportalb.onrender.com/";
+const prodUrl = ""; // Add the backend production URL here
 
 // Set BASE_URL depending on the environment
 export const BASE_URL = process.env.NODE_ENV === 'production' ? devUrl : devUrl;
