@@ -13,7 +13,7 @@ import UserDashboard from './pages/userDashboard/Dashboard';
 function App() {
   
   const {user} = useContext(AuthContext)
-  console.log("User=>", user);
+  // console.log("User=>", user);
   
   return (
    <BrowserRouter>
