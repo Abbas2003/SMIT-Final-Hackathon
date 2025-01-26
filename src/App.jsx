@@ -9,6 +9,7 @@ import Dashboard from './pages/adminDashboard/Dashboard'
 import { useContext } from 'react';
 import { AuthContext } from './context/UserContext';
 import UserDashboard from './pages/userDashboard/Dashboard';
+import NotFound from './pages/notFound/NotFound';
 
 function App() {
   
@@ -38,6 +39,8 @@ function App() {
         <Route index path="profile" element={<Home />} />
         <Route path="settings" element={<Home />} />
       </Route>
+
+      <Route path='*' element={<NotFound />} />
 
     </Routes>
    </BrowserRouter>
