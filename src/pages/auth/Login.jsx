@@ -125,10 +125,6 @@ const Login = () => {
             </Button>
           </Form.Item>
         </Form>
-
-        <Typography.Text className="block text-center text-sm mt-4 text-gray-500">
-          Don't have an account? <a href="/auth/sign-up">Register here</a>
-        </Typography.Text>
       </Card>
     </div>
   );

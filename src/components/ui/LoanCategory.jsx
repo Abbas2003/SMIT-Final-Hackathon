@@ -34,7 +34,7 @@ const LoanCategories = () => {
         <div className='flex items-center justify-between my-5'>
             <div className='text-3xl font-bold'>Loan Categories</div>
             <div>
-                <Button type="default" size='large' href='/loan-calculator'>Calculate Loan</Button>
+                <Button type="default" size='large' href='/loan-calculator'>Apply for Loan</Button>
             </div>
         </div>
     

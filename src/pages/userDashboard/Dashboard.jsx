@@ -12,9 +12,15 @@ import {
     PieChartOutlined,
     DesktopOutlined,
     LogoutOutlined,
+    UsergroupAddOutlined,
+    FormOutlined,
 } from "@ant-design/icons";
 import { AuthContext } from "../../context/UserContext";
 import ViewRequest from "./Request";
+import UserProfile from "./Profile";
+import GuarantorAndPersonalDetails from "./Guarantor";
+import User from "./User";
+import ApplicationForm from "./ApplicationForm";
 
 const { Header, Sider, Content } = Layout;
 
@@ -29,9 +35,13 @@ const UserDashboard = () => {
     const renderContent = () => {
         switch (selectedMenu) {
             case "dashboard":
-                return <Typography.Title>Dashboard Content</Typography.Title>;
+                return <Typography.Title><User /></Typography.Title>;
             case "profile":
-                return <Typography.Title>Profile Content</Typography.Title>;
+                return <Typography.Title><UserProfile /></Typography.Title>;
+            case "form":
+                return <Typography.Title><ApplicationForm /></Typography.Title>;
+            case "guarantor":
+                return <Typography.Title><GuarantorAndPersonalDetails /></Typography.Title>;
             case "request":
                 return <Typography.Title><ViewRequest /></Typography.Title>;
             default:
@@ -70,7 +80,7 @@ const UserDashboard = () => {
                         fontSize: "18px",
                     }}
                 >
-                    {collapsed ? "" : "SMIT Hackathon"}
+                    {collapsed ? "" : "Saylani Microfinance"}
                 </div>
                 <Menu
                     theme="dark"
@@ -84,8 +94,14 @@ const UserDashboard = () => {
                     <Menu.Item key="profile" icon={<UserOutlined />}>
                         Profile
                     </Menu.Item>
+                    <Menu.Item key="form" icon={<FormOutlined />}>
+                        Application
+                    </Menu.Item>
                     <Menu.Item key="request" icon={<DesktopOutlined />}>
                         View Request
+                    </Menu.Item>
+                    <Menu.Item key="guarantor" icon={<UsergroupAddOutlined />}>
+                        Guarantors Info
                     </Menu.Item>
                     <Menu.Item key="logout" icon={<LogoutOutlined />}>
                         Logout
@@ -150,10 +166,10 @@ const UserDashboard = () => {
                 </Header>
                 <Content
                     style={{
-                        margin: "16px",
+                        // margin: "16px",
                         padding: "16px",
                         background: "#fff",
-                        borderRadius: "8px",
+                        // borderRadius: "8px",
                         boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >

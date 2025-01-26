@@ -13,4 +13,7 @@ export const AppRoutes = {
     // User Routes
     getMyInfo: BASE_URL + "api/v1/user/get-my-info",
 
+    // Send Password to Email
+    sendLoginPassword: BASE_URL + "api/v1/user/send-email",
+
 };
