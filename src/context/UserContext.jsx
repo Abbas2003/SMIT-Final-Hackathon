@@ -23,8 +23,8 @@ export default function AuthContextProvider({ children }) {
     }
   }, [user]);
 
-  const getUser = () => {
-    axios
+  const getUser = async () => {
+    await axios
       .get(AppRoutes.getMyInfo, {
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,

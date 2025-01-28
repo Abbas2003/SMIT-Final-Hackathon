@@ -1,18 +1,52 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Typography, Card, Row, Col, Upload, message } from "antd";
-import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import React, { useContext, useEffect, useState } from "react";
+import { Form, Input, Button, Typography, Card, Row, Col, message } from "antd";
+import axios from "axios";
+import { AppRoutes } from "../../routes/routes";
+import { AuthContext } from "../../context/UserContext";
 
 const GuarantorAndPersonalDetails = () => {
   const [form] = Form.useForm();
+  const { user } = useContext(AuthContext);
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log("Submitted Data:", values);
-      message.success("Details submitted successfully!");
+
+      // Prepare guarantor data for API submission
+      const guarantorData = [
+        {
+          userId: user._id,
+          name: values.guarantor1Name,
+          email: values.guarantor1Email,
+          location: values.guarantor1Location,
+          cnic: values.guarantor1Cnic,
+          relation: values.guarantor1Relation,
+        },
+        {
+          userId: user._id,
+          name: values.guarantor2Name,
+          email: values.guarantor2Email,
+          location: values.guarantor2Location,
+          cnic: values.guarantor2Cnic,
+          relation: values.guarantor2Relation,
+        },
+      ];
+
+      // API Call
+      const response = await axios.post(AppRoutes.addGuarantor, guarantorData);
+
+      message.success("Guarantor details submitted successfully!");
+      console.log("API Response:", response.data);
+
+      // Reset form after successful submission
+      form.resetFields();
     } catch (error) {
-      console.error("Validation Failed:", error);
-      message.error("Please fill in all required fields correctly.");
+      if (error.name === "ValidationError") {
+        message.error("Please fill in all fields correctly.");
+      } else {
+        console.error("API Call Error:", error);
+        message.error(error.response?.data?.message || "Failed to submit guarantor details. Please try again.");
+      }
     }
   };
 
@@ -22,45 +56,20 @@ const GuarantorAndPersonalDetails = () => {
         Provide Additional Details
       </Typography.Title>
 
-      <Card style={{ maxWidth: "800px", margin: "0 auto", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
+      <Card
+        style={{
+          maxWidth: "800px",
+          margin: "0 auto",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          borderRadius: "10px",
+        }}
+      >
         <Form layout="vertical" form={form}>
-          {/* Personal Information */}
-          <Typography.Title level={4}>Personal Information</Typography.Title>
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Form.Item
-                label="Full Name"
-                name="name"
-                rules={[{ required: true, message: "Please enter your full name" }]}
-              >
-                <Input placeholder="Enter your full name" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Phone Number"
-                name="phone"
-                rules={[{ required: true, message: "Please enter your phone number" }]}
-              >
-                <Input placeholder="Enter your phone number" />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                label="Address"
-                name="address"
-                rules={[{ required: true, message: "Please enter your address" }]}
-              >
-                <Input.TextArea placeholder="Enter your address" rows={3} />
-              </Form.Item>
-            </Col>
-          </Row>
-
           {/* Guarantor Information */}
           <Typography.Title level={4}>Guarantors' Information</Typography.Title>
           {[1, 2].map((guarantor) => (
             <Row gutter={[16, 16]} key={guarantor}>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   label={`Guarantor ${guarantor} Name`}
                   name={`guarantor${guarantor}Name`}
@@ -69,7 +78,7 @@ const GuarantorAndPersonalDetails = () => {
                   <Input placeholder="Enter guarantor's name" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   label={`Guarantor ${guarantor} Email`}
                   name={`guarantor${guarantor}Email`}
@@ -78,7 +87,7 @@ const GuarantorAndPersonalDetails = () => {
                   <Input placeholder="Enter guarantor's email" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   label={`Guarantor ${guarantor} Location`}
                   name={`guarantor${guarantor}Location`}
@@ -87,7 +96,7 @@ const GuarantorAndPersonalDetails = () => {
                   <Input placeholder="Enter guarantor's location" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   label={`Guarantor ${guarantor} CNIC`}
                   name={`guarantor${guarantor}Cnic`}
@@ -99,27 +108,17 @@ const GuarantorAndPersonalDetails = () => {
                   <Input placeholder="Enter guarantor's CNIC" />
                 </Form.Item>
               </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label={`Guarantor ${guarantor} Relation`}
+                  name={`guarantor${guarantor}Relation`}
+                  rules={[{ required: true, message: "Please specify the guarantor's relation" }]}
+                >
+                  <Input placeholder="Enter guarantor's relation (e.g., Friend, Relative)" />
+                </Form.Item>
+              </Col>
             </Row>
           ))}
-
-          {/* Optional Files */}
-          <Typography.Title level={4}>Optional Documents</Typography.Title>
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Form.Item label="Upload Statement" name="statement">
-                <Upload beforeUpload={() => false} maxCount={1}>
-                  <Button icon={<UploadOutlined />}>Upload Statement</Button>
-                </Upload>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Upload Salary Sheet" name="salarySheet">
-                <Upload beforeUpload={() => false} maxCount={1}>
-                  <Button icon={<UploadOutlined />}>Upload Salary Sheet</Button>
-                </Upload>
-              </Form.Item>
-            </Col>
-          </Row>
 
           {/* Submit Button */}
           <Form.Item>
