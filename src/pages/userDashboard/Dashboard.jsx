@@ -19,12 +19,12 @@ import {
 } from "@ant-design/icons";
 import { AuthContext } from "../../context/UserContext";
 import ViewRequest from "./Request";
-import UserProfile from "./Profile";
 import GuarantorAndPersonalDetails from "./Guarantor";
 import User from "./User";
 import Cookies from "js-cookie";
 import ApplicationForm from "./ApplicationForm";
 import { useNavigate } from "react-router";
+import UserProfile from "./ProfileSection";
 
 const { Header, Sider, Content } = Layout;
 
@@ -62,7 +62,12 @@ const UserDashboard = () => {
             case "dashboard":
                 return <User />;
             case "profile":
-                return <UserProfile />;
+                return (
+                <>
+                    {/* <User /> 
+                    <UserProfile />; */}
+                    <UserProfile />
+                </>)
             case "form":
                 return <ApplicationForm />;
             case "guarantor":
