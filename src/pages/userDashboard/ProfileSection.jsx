@@ -8,22 +8,19 @@ import { AppRoutes } from "../../routes/routes";
 const { Title, Paragraph } = Typography;
 
 const UserProfile = () => {
-  const { user, setUser } = useContext(AuthContext); // Added setUser to update user context
+  const { user, setUser } = useContext(AuthContext);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState({ bankStatement: null, salarySheet: null });
 
   const handleFileChange = (info, field) => {
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} uploaded successfully.`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} upload failed.`);
-    }
-    setFileList((prev) => ({ ...prev, [field]: info.file.originFileObj }));
+    setFileList((prev) => ({
+      ...prev,
+      [field]: info.fileList[0]?.originFileObj || null, // Store only the latest file
+    }));
   };
 
   const handleUpdateProfile = async (values) => {
-    
     setLoading(true);
     try {
       const formData = new FormData();
@@ -31,20 +28,24 @@ const UserProfile = () => {
       formData.append("mobileNo", values.mobileNo);
       formData.append("fatherName", values.fatherName);
 
-      // Append files if selected
-      if (bankStatement.fileList) {
-        formData.append("bankStatement", bankStatement.fileList);
+      // Append files only if they exist
+      if (fileList.bankStatement) {
+        console.log("Bank Statement:", fileList.bankStatement);
+        formData.append("bankStatement", fileList.bankStatement);
       }
-      if (salarySheet.fileList) {
-        formData.append("salarySheet", salarySheet.fileList);
+      if (fileList.salarySheet) {
+        console.log("Salary Sheet:", fileList.salarySheet);
+        formData.append("salarySheet", fileList.salarySheet);
       }
-      console.log("Form data:", values);
-      
+
       const response = await axios.put(`${AppRoutes.updateUser}/${user._id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setUser(response.data.data); // Update user context
+      console.log("Profile updated:", response);
+      
+
+      setUser(response.data.data);
       message.success("Profile updated successfully!");
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -100,7 +101,7 @@ const UserProfile = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Bank Statement" name="bankStatement">
+              <Form.Item label="Bank Statement">
                 <Upload
                   listType="picture"
                   beforeUpload={() => false}
@@ -113,7 +114,7 @@ const UserProfile = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Salary Sheet" name="salarySheet">
+              <Form.Item label="Salary Sheet">
                 <Upload
                   listType="picture"
                   beforeUpload={() => false}
