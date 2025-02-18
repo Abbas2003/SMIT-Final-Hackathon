@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Form, Select, Input, Button, Card, Typography } from 'antd';
 import QRCode from 'react-qr-code';
 import { jsPDF } from 'jspdf';
+import { AuthContext } from '../../context/UserContext';
 
 const { Option } = Select;
 const { Title, Paragraph } = Typography;
@@ -35,6 +36,7 @@ export default function RequestForm() {
   const [loanAmount, setLoanAmount] = useState('');
   const [loanPeriod, setLoanPeriod] = useState('');
   const [slipData, setSlipData] = useState(null);
+  const { user } = useContext(AuthContext)
 
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
@@ -67,54 +69,60 @@ export default function RequestForm() {
     doc.save('Loan_Request_Slip.pdf');
   };
 
-  return (
-    <Card style={{ maxWidth: 600, margin: '50px auto', padding: 20 }}>
-      <Title level={2}>Loan Request Form</Title>
-      <Form layout='vertical' onFinish={handleSubmit}>
-        <Form.Item label='Select Category' required>
-          <Select placeholder='Choose a category' onChange={handleCategoryChange}>
-            {Object.keys(loanCategories).map((category) => (
-              <Option key={category} value={category}>{category}</Option>
-            ))}
-          </Select>
-        </Form.Item>
+  console.log(user)
 
-        {selectedCategory && (
-          <Form.Item label='Select Subcategory' required>
-            <Select placeholder='Choose a subcategory' onChange={setSelectedSubcategory}>
-              {loanCategories[selectedCategory].subcategories.map((sub) => (
-                <Option key={sub} value={sub}>{sub}</Option>
+  return (
+    <div>{
+      user.guarantors.length == 0 ? <h1 className='flex justify-center items-center md:pt-40 pt-20 text-3xl font-bold'>{`You need to add guarantors :)`}</h1> : <Card style={{ maxWidth: 600, margin: '50px auto', padding: 20 }}>
+        <Title level={2}>Loan Request Form</Title>
+        <Form layout='vertical' onFinish={handleSubmit}>
+          <Form.Item label='Select Category' required>
+            <Select placeholder='Choose a category' onChange={handleCategoryChange}>
+              {Object.keys(loanCategories).map((category) => (
+                <Option key={category} value={category}>{category}</Option>
               ))}
             </Select>
           </Form.Item>
+
+          {selectedCategory && (
+            <Form.Item label='Select Subcategory' required>
+              <Select placeholder='Choose a subcategory' onChange={setSelectedSubcategory}>
+                {loanCategories[selectedCategory].subcategories.map((sub) => (
+                  <Option key={sub} value={sub}>{sub}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+
+          <Form.Item label='Loan Amount' required>
+            <Input type='number' placeholder='Enter loan amount' onChange={(e) => setLoanAmount(e.target.value)} />
+          </Form.Item>
+
+          <Form.Item label='Loan Period'>
+            <Input value={loanPeriod} disabled />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type='primary' htmlType='submit'>Submit Request</Button>
+          </Form.Item>
+        </Form>
+
+        {slipData && (
+          <Card style={{ marginTop: 20, textAlign: 'center' }}>
+            <Title level={3}>Loan Request Slip</Title>
+            <Paragraph><strong>Token Number:</strong> {slipData.token}</Paragraph>
+            <Paragraph><strong>Category:</strong> {slipData.category}</Paragraph>
+            <Paragraph><strong>Subcategory:</strong> {slipData.subcategory}</Paragraph>
+            <Paragraph><strong>Amount:</strong> PKR {slipData.amount}</Paragraph>
+            <Paragraph><strong>Loan Period:</strong> {slipData.period} years</Paragraph>
+            <Paragraph><strong>Appointment:</strong> {slipData.appointment}</Paragraph>
+            <QRCode value={JSON.stringify(slipData)} size={150} className='text-center' />
+            <Button type='primary' onClick={downloadSlipAsPDF} style={{ marginTop: 20 }}>Download PDF</Button>
+          </Card>
         )}
+      </Card>
+    }
 
-        <Form.Item label='Loan Amount' required>
-          <Input type='number' placeholder='Enter loan amount' onChange={(e) => setLoanAmount(e.target.value)} />
-        </Form.Item>
-
-        <Form.Item label='Loan Period'>
-          <Input value={loanPeriod} disabled />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type='primary' htmlType='submit'>Submit Request</Button>
-        </Form.Item>
-      </Form>
-
-      {slipData && (
-        <Card style={{ marginTop: 20, textAlign: 'center' }}>
-          <Title level={3}>Loan Request Slip</Title>
-          <Paragraph><strong>Token Number:</strong> {slipData.token}</Paragraph>
-          <Paragraph><strong>Category:</strong> {slipData.category}</Paragraph>
-          <Paragraph><strong>Subcategory:</strong> {slipData.subcategory}</Paragraph>
-          <Paragraph><strong>Amount:</strong> PKR {slipData.amount}</Paragraph>
-          <Paragraph><strong>Loan Period:</strong> {slipData.period} years</Paragraph>
-          <Paragraph><strong>Appointment:</strong> {slipData.appointment}</Paragraph>
-          <QRCode value={JSON.stringify(slipData)} size={150} className='text-center' />
-          <Button type='primary' onClick={downloadSlipAsPDF} style={{ marginTop: 20 }}>Download PDF</Button>
-        </Card>
-      )}
-    </Card>
+    </div>
   );
 }

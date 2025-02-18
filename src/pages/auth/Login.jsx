@@ -35,7 +35,7 @@ const Login = () => {
           } else {
             message.error("You are not authorized to login.");
           }
-        }, 1000);
+        }, 2000);
       } else {
         message.error("Login failed. Please check your credentials.");
       }

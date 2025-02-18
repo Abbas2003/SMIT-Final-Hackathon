@@ -35,7 +35,8 @@ function App() {
       </Route>
 
       {/* User Dashboard Routes */}
-      <Route path='/user-dashboard' element={user?.role == "user" ? <UserDashboard /> : ""}>
+      {/* <Route path='/user-dashboard' element={user?.role == "user" ? <UserDashboard /> : ""}> */}
+      <Route path='/user-dashboard' element={<UserDashboard />}>
         <Route index path="profile" element={<Home />} />
         <Route path="settings" element={<Home />} />
       </Route>

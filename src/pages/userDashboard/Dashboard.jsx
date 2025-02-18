@@ -6,6 +6,9 @@ import {
     Typography,
     Spin,
     message,
+    Modal,
+    Form,
+    Input,
 } from "antd";
 import {
     MenuUnfoldOutlined,
@@ -25,6 +28,7 @@ import Cookies from "js-cookie";
 import ApplicationForm from "./ApplicationForm";
 import { useNavigate } from "react-router";
 import UserProfile from "./ProfileSection";
+import FirstLoginModal from "./FirstLoginModal";
 
 const { Header, Sider, Content } = Layout;
 
@@ -37,17 +41,31 @@ const UserDashboard = () => {
 
     useEffect(() => {
         // Simulate data fetching or authentication check
-        const initializeDashboard = async () => {
-            if (!user) {
-                message.error("User not authenticated. Redirecting...");
-                navigate("/"); // Redirect to login if no user is found
-            } else {
-                setLoading(false); // Set loading to false after initialization
-            }
-        };
+        // const initializeDashboard = async () => {
+        //     if (!user) {
+        //         message.error("User not authenticated. Redirecting...");
+        //         navigate("/"); // Redirect to login if no user is found
 
-        initializeDashboard();
+
+        //     } else {
+        //         setLoading(false); // Set loading to false after initialization
+        //     }
+        // };
+
+
+        if (user?.isFirstLogin) {
+            console.log(user?.isFirstLogin);
+            // <FirstLoginModal user={user} />
+            
+        } else {
+            console.log("User is not first login");
+        }
+        setLoading(false);
+
+        // initializeDashboard();
     }, [user, navigate]);
+
+   
 
     const toggleSidebar = () => setCollapsed(!collapsed);
 
@@ -63,11 +81,11 @@ const UserDashboard = () => {
                 return <User />;
             case "profile":
                 return (
-                <>
-                    {/* <User /> 
+                    <>
+                        {/* <User /> 
                     <UserProfile />; */}
-                    <UserProfile />
-                </>)
+                        <UserProfile />
+                    </>)
             case "form":
                 return <ApplicationForm />;
             case "guarantor":
@@ -85,20 +103,20 @@ const UserDashboard = () => {
         email: user?.email || "",
     };
 
-    if (loading) {
-        return (
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
-                }}
-            >
-                <Spin size="large" tip="Loading Dashboard..." />
-            </div>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <div
+    //             style={{
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 justifyContent: "center",
+    //                 height: "100vh",
+    //             }}
+    //         >
+    //             <Spin size="large" tip="Loading Dashboard..." fullscreen />
+    //         </div>
+    //     );
+    // }
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
@@ -210,11 +228,14 @@ const UserDashboard = () => {
                         boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
                     }}
                 >
-                    {renderContent()}
+                    {user?.isFirstLogin ? <FirstLoginModal user={user} /> : renderContent()}
                 </Content>
+            
             </Layout>
         </Layout>
     );
+
+
 };
 
 export default UserDashboard;
