@@ -13,9 +13,11 @@ import {
   PieChartOutlined,
   DesktopOutlined,
   LogoutOutlined,
+  FileOutlined,
 } from "@ant-design/icons";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
+import Applications from "./Applications";
 
 const { Header, Sider, Content } = Layout;
 
@@ -34,6 +36,8 @@ const Dashboard = () => {
         return <Typography.Title>Dashboard Content</Typography.Title>;
       case "profile":
         return <Typography.Title>Profile Content</Typography.Title>;
+      case "applications":
+        return <Applications />;
       case "reports":
         return <Typography.Title>Reports Content</Typography.Title>;
       default:
@@ -87,11 +91,14 @@ const Dashboard = () => {
           <Menu.Item key="dashboard" icon={<PieChartOutlined />}>
             Dashboard
           </Menu.Item>
-          <Menu.Item key="profile" icon={<UserOutlined />}>
-            Profile
+          <Menu.Item key="applications" icon={<FileOutlined />}>
+            Applications
           </Menu.Item>
           <Menu.Item key="reports" icon={<DesktopOutlined />}>
             Reports
+          </Menu.Item>
+          <Menu.Item key="profile" icon={<UserOutlined />}>
+            Profile
           </Menu.Item>
           <Menu.Item key="logout" onClick={handleLogout} icon={<LogoutOutlined />}>
             Logout
