@@ -21,4 +21,8 @@ export const AppRoutes = {
     // Guarantors Routes
     addGuarantor: BASE_URL + "api/v1/guarantor/add-guarantors",
 
+    // Application Routes
+    loanRequest: BASE_URL + "api/v1/loan/request-loan",
+    getLoanRequests: BASE_URL + "api/v1/loan/get-user-loans",
+
 };

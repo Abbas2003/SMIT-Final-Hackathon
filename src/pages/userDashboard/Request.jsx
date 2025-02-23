@@ -89,7 +89,7 @@ const LoanRequestDetails = ({ loanDetails }) => {
         </Row>
       </Card>
 
-      <Card style={{ marginBottom: "20px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
+      {/* <Card style={{ marginBottom: "20px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Typography.Text strong>Token Number:</Typography.Text>
@@ -100,7 +100,7 @@ const LoanRequestDetails = ({ loanDetails }) => {
             <Typography.Text> {appointmentDetails || "N/A"}</Typography.Text>
           </Col>
         </Row>
-      </Card>
+      </Card> */}
     </div>
   );
 };

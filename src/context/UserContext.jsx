@@ -21,7 +21,7 @@ export default function AuthContextProvider({ children }) {
     //   if(user && user.role == "admin") navigate("/admin-dashboard");
     //   if(user && user.role == "user") navigate("/user-dashboard");
     }
-  }, [user]);
+  }, [user, setUser]);
 
   const getUser = async () => {
     await axios

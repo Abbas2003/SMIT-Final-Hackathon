@@ -1,8 +1,9 @@
-import { useContext, useState } from 'react';
-import { Form, Select, Input, Button, Card, Typography } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import { Form, Select, Input, Button, Card, Typography, message } from 'antd';
 import QRCode from 'react-qr-code';
 import { jsPDF } from 'jspdf';
 import { AuthContext } from '../../context/UserContext';
+import axios from 'axios';
 
 const { Option } = Select;
 const { Title, Paragraph } = Typography;
@@ -43,16 +44,29 @@ export default function RequestForm() {
     setLoanPeriod(loanCategories[value]?.period);
   };
 
-  const handleSubmit = () => {
-    const slip = {
-      token: `TOKEN-${Math.floor(Math.random() * 100000)}`,
-      category: selectedCategory,
-      subcategory: selectedSubcategory,
-      amount: loanAmount,
-      period: loanPeriod,
-      appointment: '2025-02-01, 10:00 AM, Saylani Office'
-    };
-    setSlipData(slip);
+  useEffect(() => {
+    
+  })
+
+  const handleSubmit = async () => {
+    // const slip = {
+    //   token: `TOKEN-${Math.floor(Math.random() * 100000)}`,
+    //   category: selectedCategory,
+    //   subcategory: selectedSubcategory,
+    //   amount: loanAmount,
+    //   period: loanPeriod,
+    //   appointment: '2025-02-01, 10:00 AM, Saylani Office'
+    // };
+    // setSlipData(slip);
+    // await axios.post(AppRoutes.loanRequest)
+    //   .then((res) => {
+    //     message.success(res.data.message)
+    //     console.log(res)
+    //   })
+    //   .catch((err) => {
+    //     message.error("Cannot submit request right now.")
+    //     console.log(err)
+    //   })
   };
 
   const downloadSlipAsPDF = () => {
@@ -73,7 +87,7 @@ export default function RequestForm() {
 
   return (
     <div>{
-      user.guarantors.length == 0 ? <h1 className='flex justify-center items-center md:pt-40 pt-20 text-3xl font-bold'>{`You need to add guarantors :)`}</h1> : <Card style={{ maxWidth: 600, margin: '50px auto', padding: 20 }}>
+      user?.guarantors?.length == 0 ? <h1 className='flex justify-center items-center md:pt-40 pt-20 text-3xl font-bold'>{`You need to add guarantors :)`}</h1> : <Card style={{ maxWidth: 600, margin: '50px auto', padding: 20 }}>
         <Title level={2}>Loan Request Form</Title>
         <Form layout='vertical' onFinish={handleSubmit}>
           <Form.Item label='Select Category' required>
@@ -107,7 +121,7 @@ export default function RequestForm() {
           </Form.Item>
         </Form>
 
-        {slipData && (
+        {/* {slipData && (
           <Card style={{ marginTop: 20, textAlign: 'center' }}>
             <Title level={3}>Loan Request Slip</Title>
             <Paragraph><strong>Token Number:</strong> {slipData.token}</Paragraph>
@@ -119,7 +133,7 @@ export default function RequestForm() {
             <QRCode value={JSON.stringify(slipData)} size={150} className='text-center' />
             <Button type='primary' onClick={downloadSlipAsPDF} style={{ marginTop: 20 }}>Download PDF</Button>
           </Card>
-        )}
+        )} */}
       </Card>
     }
 

@@ -29,6 +29,7 @@ import ApplicationForm from "./ApplicationForm";
 import { useNavigate } from "react-router";
 import UserProfile from "./ProfileSection";
 import FirstLoginModal from "./FirstLoginModal";
+import LoanCalculator from "../../components/LoanCalculator";
 
 const { Header, Sider, Content } = Layout;
 
@@ -87,7 +88,7 @@ const UserDashboard = () => {
                         <UserProfile />
                     </>)
             case "form":
-                return <ApplicationForm />;
+                return <LoanCalculator isHome={false} />;
             case "guarantor":
                 return <GuarantorAndPersonalDetails />;
             case "request":

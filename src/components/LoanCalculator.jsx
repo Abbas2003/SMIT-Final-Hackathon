@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, Select, Input, Button, Typography, message, Modal, Form, Spin } from "antd";
 import axios from "axios";
 import { AppRoutes } from "../routes/routes";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../context/UserContext";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -30,7 +31,7 @@ const loanCategories = {
   },
 };
 
-export default function LoanCalculator() {
+export default function LoanCalculator({ isHome }) {
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [subcategory, setSubcategory] = useState("");
@@ -39,8 +40,13 @@ export default function LoanCalculator() {
   const [loanPeriod, setLoanPeriod] = useState(null);
   const [loanBreakdown, setLoanBreakdown] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { user } = useContext(AuthContext)
   const [form] = Form.useForm();
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   submitApplication()
+  // }, [])
 
   const handleCategoryChange = (value) => {
     setCategory(value);
@@ -118,6 +124,28 @@ export default function LoanCalculator() {
     }
   };
 
+  const submitApplication = async () => {
+    const values = await form.validateFields();
+    console.log("Application values", category, subcategory, initialAmount, depositAmount, loanPeriod, user._id);
+    
+    await axios.post(AppRoutes.loanRequest, {
+      category: category,
+      subcategory: subcategory,
+      amount: initialAmount,
+      initialDeposit: depositAmount,
+      loanPeriod: loanPeriod,
+      userId: user?._id
+    })
+      .then((res) => {
+        message.success(res.data.data.message)
+        console.log(res)
+      })
+      .catch((err) => {
+        message.error(err.data.data.message || "Cannot submit request right now.")
+        console.log(err)
+      })
+  }
+
   return (
     <>
       <Card style={{ maxWidth: 500, margin: "50px auto", padding: 20, boxShadow: "0px 2px 5px rgba(0,0,0,0.1)" }}>
@@ -184,12 +212,18 @@ export default function LoanCalculator() {
           <>
             <Paragraph>Total Payable: PKR {loanBreakdown.totalPayable.toFixed(2)}</Paragraph>
             <Paragraph>Monthly Installment: PKR {loanBreakdown.monthlyInstallment.toFixed(2)}</Paragraph>
-            <Button type="primary" block onClick={() => setIsModalVisible(true)}>
-              Proceed to Application
-            </Button>
-            <Button type="dashed" style={{ margin: "10px 0px" }} block onClick={() => navigate("/")}>
-              Back to home
-            </Button>
+            {
+              isHome ? (
+                <>
+                  <Button type="primary" block onClick={() => setIsModalVisible(true)}>
+                    Proceed to Application
+                  </Button>
+                  <Button type="dashed" style={{ margin: "10px 0px" }} block onClick={() => navigate("/")}>
+                    Back to home
+                  </Button>
+                </>
+              ) : (<Button type="primary" block onClick={submitApplication}>Submit Application</Button>)
+            }
           </>
         )}
       </Card>

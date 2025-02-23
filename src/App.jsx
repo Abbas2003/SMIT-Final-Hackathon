@@ -20,7 +20,7 @@ function App() {
    <BrowserRouter>
     <Routes>
       <Route path='/' element={<Home />}></Route>
-      <Route path='/loan-calculator' element={<LoanCalculator />} />
+      <Route path='/loan-calculator' element={<LoanCalculator isHome={true} />} />
 
       {/* Auth Routes */}
       <Route path='/auth'>
