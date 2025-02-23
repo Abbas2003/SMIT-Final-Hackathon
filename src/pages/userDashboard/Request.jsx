@@ -1,125 +1,88 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Typography, Row, Col, Table } from "antd";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import { AppRoutes } from "../../routes/routes";
 
 const LoanRequestDetails = ({ loanDetails }) => {
-  // Sample data structure for loanDetails
-  const {
-    category,
-    subcategory,
-    loanAmount,
-    loanPeriod,
-    guarantors,
-    personalInfo,
-    tokenNumber,
-    appointmentDetails,
-  } = loanDetails || {};
+  const { category, subcategory, amount, loanPeriod, guarantors, personalInfo, status, initialDeposit } = loanDetails || {};
 
   const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Location",
-      dataIndex: "location",
-      key: "location",
-    },
-    {
-      title: "CNIC",
-      dataIndex: "cnic",
-      key: "cnic",
-    },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Location", dataIndex: "location", key: "location" },
+    { title: "CNIC", dataIndex: "cnic", key: "cnic" },
   ];
 
   return (
     <div style={{ padding: "20px" }}>
-      <Typography.Title level={3} style={{ textAlign: "center", marginBottom: "20px" }}>
-        Loan Request Details
-      </Typography.Title>
-
-      <Card style={{ marginBottom: "20px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
+      <Typography.Title level={3} style={{ textAlign: "center" }}>Loan Request Details</Typography.Title>
+      <Card style={{ marginBottom: "20px" }}>
         <Row gutter={[16, 16]}>
-          <Col span={12}>
-            <Typography.Text strong>Category:</Typography.Text>
-            <Typography.Text> {category || "N/A"}</Typography.Text>
-          </Col>
-          <Col span={12}>
-            <Typography.Text strong>Subcategory:</Typography.Text>
-            <Typography.Text> {subcategory || "N/A"}</Typography.Text>
-          </Col>
-          <Col span={12}>
-            <Typography.Text strong>Loan Amount:</Typography.Text>
-            <Typography.Text> PKR {loanAmount || "N/A"}</Typography.Text>
-          </Col>
-          <Col span={12}>
-            <Typography.Text strong>Loan Period:</Typography.Text>
-            <Typography.Text> {loanPeriod || "N/A"} years</Typography.Text>
-          </Col>
+          <Col span={12}><Typography.Text strong>Category:</Typography.Text> {category || "N/A"}</Col>
+          <Col span={12}><Typography.Text strong>Subcategory:</Typography.Text> {subcategory || "N/A"}</Col>
+          <Col span={12}><Typography.Text strong>Loan Amount:</Typography.Text> PKR {amount || "N/A"}</Col>
+          <Col span={12}><Typography.Text strong>Loan Period:</Typography.Text> {loanPeriod || "N/A"} years</Col>
+          <Col span={12}><Typography.Text strong>Initial Deposit:</Typography.Text> PKR {initialDeposit || "N/A"}</Col>
+          <Col span={12} className={status === "pending" ? "text-yellow-500" : status === "approved" ? "text-green-500" : "text-red-500"}><Typography.Text strong>Status:</Typography.Text> {status || "N/A"}</Col>
         </Row>
       </Card>
-
-      <Card style={{ marginBottom: "20px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
+      <Card style={{ marginBottom: "20px" }}>
         <Typography.Title level={4}>Guarantors</Typography.Title>
-        <Table
-          dataSource={guarantors || []}
-          columns={columns}
-          pagination={false}
-          bordered
-          style={{ marginTop: "20px" }}
-        />
+        <Table dataSource={guarantors || []} columns={columns} pagination={false} bordered />
       </Card>
-
-      <Card style={{ marginBottom: "20px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
+      <Card style={{ marginBottom: "20px" }}>
         <Typography.Title level={4}>Personal Information</Typography.Title>
         <Row gutter={[16, 16]}>
-          <Col span={12}>
-            <Typography.Text strong>Address:</Typography.Text>
-            <Typography.Text> {personalInfo?.address || "N/A"}</Typography.Text>
-          </Col>
-          <Col span={12}>
-            <Typography.Text strong>Phone:</Typography.Text>
-            <Typography.Text> {personalInfo?.phone || "N/A"}</Typography.Text>
-          </Col>
+          <Col span={12}><Typography.Text strong>Address:</Typography.Text> {personalInfo?.address || "N/A"}</Col>
+          <Col span={12}><Typography.Text strong>Phone:</Typography.Text> {personalInfo?.phone || "N/A"}</Col>
         </Row>
       </Card>
-
-      {/* <Card style={{ marginBottom: "20px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
-        <Row gutter={[16, 16]}>
-          <Col span={12}>
-            <Typography.Text strong>Token Number:</Typography.Text>
-            <Typography.Text> {tokenNumber || "N/A"}</Typography.Text>
-          </Col>
-          <Col span={12}>
-            <Typography.Text strong>Appointment Details:</Typography.Text>
-            <Typography.Text> {appointmentDetails || "N/A"}</Typography.Text>
-          </Col>
-        </Row>
-      </Card> */}
     </div>
   );
 };
 
-// Example usage with mock data
-const mockLoanDetails = {
-  category: "Business Startup Loans",
-  subcategory: "Shop Machinery",
-  loanAmount: 800000,
-  loanPeriod: 5,
-  guarantors: [
-    { name: "John Doe", email: "john@example.com", location: "Karachi", cnic: "42101-1234567-1" },
-    { name: "Jane Smith", email: "jane@example.com", location: "Lahore", cnic: "42101-7654321-1" },
-  ],
-  personalInfo: { address: "123 Street, Karachi", phone: "0301-1234567" },
-  tokenNumber: "12345",
-  appointmentDetails: "Office A, 10:00 AM, 25th Jan 2025",
-};
-
 export default function ViewRequest() {
-  return <LoanRequestDetails loanDetails={mockLoanDetails} />;
+  const [loans, setLoans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const response = await axios.get(AppRoutes.getLoanRequests, {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` },
+        });
+
+        console.log("API Response:", response.data);  // Debugging log
+
+        if (response.data) {
+          setLoans(response.data.data);
+        } else {
+          setError(response.data.message);
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to fetch loans');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLoans();
+  }, []);
+
+  useEffect(() => {
+    console.log("Updated loans state:", loans);
+  }, [loans]);
+
+  // if (loading) return <div>Loading...</div>;
+  // if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      {loans.length >= 0 ? loans.map((loan) => (
+        <LoanRequestDetails key={loan._id} loanDetails={loan} />
+      )) : <div className="text-center text-3xl font-bold">No loans found</div>}
+    </div>
+  );
 }
