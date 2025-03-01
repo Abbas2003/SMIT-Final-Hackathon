@@ -127,7 +127,7 @@ export default function LoanCalculator({ isHome }) {
   const submitApplication = async () => {
     const values = await form.validateFields();
     console.log("Application values", category, subcategory, initialAmount, depositAmount, loanPeriod, user._id);
-    
+
     await axios.post(AppRoutes.loanRequest, {
       category: category,
       subcategory: subcategory,
@@ -148,6 +148,7 @@ export default function LoanCalculator({ isHome }) {
 
   return (
     <>
+      <h1 className="font-bold text-3xl text-center md:mb-8 mb-4 mt-4">{isHome ? "Calculate your loan" : ""}</h1>
       <Card style={{ maxWidth: 500, margin: "50px auto", padding: 20, boxShadow: "0px 2px 5px rgba(0,0,0,0.1)" }}>
         <Title level={3}>Loan Calculator</Title>
         <Select
@@ -204,8 +205,14 @@ export default function LoanCalculator({ isHome }) {
           </>
         )}
 
-        <Button block onClick={calculateLoan} style={{ marginBottom: 20 }}>
+        <Button block onClick={calculateLoan}>
           Calculate
+        </Button>
+
+        <div className="text-center my-3">or</div>
+
+        <Button type="primary" block onClick={() => setIsModalVisible(true)}>
+          Proceed to Application
         </Button>
 
         {loanBreakdown && (

@@ -79,12 +79,11 @@ const UserDashboard = () => {
     const renderContent = () => {
         switch (selectedMenu) {
             case "dashboard":
-                return <User />;
+                return <UserDashboard />;
             case "profile":
                 return (
                     <>
-                        {/* <User /> 
-                    <UserProfile />; */}
+                        {/* <User />  */}
                         <UserProfile />
                     </>)
             case "form":

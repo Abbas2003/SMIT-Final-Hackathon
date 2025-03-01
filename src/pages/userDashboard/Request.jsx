@@ -27,17 +27,11 @@ const LoanRequestDetails = ({ loanDetails }) => {
           <Col span={12} className={status === "pending" ? "text-yellow-500" : status === "approved" ? "text-green-500" : "text-red-500"}><Typography.Text strong>Status:</Typography.Text> {status || "N/A"}</Col>
         </Row>
       </Card>
-      <Card style={{ marginBottom: "20px" }}>
+      <Card >
         <Typography.Title level={4}>Guarantors</Typography.Title>
         <Table dataSource={guarantors || []} columns={columns} pagination={false} bordered />
       </Card>
-      <Card style={{ marginBottom: "20px" }}>
-        <Typography.Title level={4}>Personal Information</Typography.Title>
-        <Row gutter={[16, 16]}>
-          <Col span={12}><Typography.Text strong>Address:</Typography.Text> {personalInfo?.address || "N/A"}</Col>
-          <Col span={12}><Typography.Text strong>Phone:</Typography.Text> {personalInfo?.phone || "N/A"}</Col>
-        </Row>
-      </Card>
+      
     </div>
   );
 };

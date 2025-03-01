@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Layout,
   Menu,
   Button,
   Typography,
-  message
+  message,
+  Avatar
 } from "antd";
 import {
   MenuUnfoldOutlined,
@@ -14,10 +15,13 @@ import {
   DesktopOutlined,
   LogoutOutlined,
   FileOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 import Applications from "./Applications";
+import { AuthContext } from "../../context/UserContext";
+import DashboardContent from "./Main";
 
 const { Header, Sider, Content } = Layout;
 
@@ -25,6 +29,8 @@ const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("dashboard");
+  const { user } = useContext(AuthContext);
+  console.log(user);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -33,7 +39,7 @@ const Dashboard = () => {
   const renderContent = () => {
     switch (selectedMenu) {
       case "dashboard":
-        return <Typography.Title>Dashboard Content</Typography.Title>;
+        return <DashboardContent />;
       case "profile":
         return <Typography.Title>Profile Content</Typography.Title>;
       case "applications":
@@ -45,11 +51,6 @@ const Dashboard = () => {
     }
   };
 
-  const user = {
-    imageUrl: "currentUser.imageUrl", // Example image URL
-    name: "currentUser.fullName",
-    email: "currentUser.email",
-  };
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -127,31 +128,21 @@ const Dashboard = () => {
           </Typography.Title>
 
           {/* User Info Button */}
-          <button
-            // onClick={handleUserMenuClick}
-            className="rounded-full p-2 bg-neutral-200 text-neutral-900 flex items-center"
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              overflow: "hidden",
-              marginLeft: "auto", // Move button to the right side
+          <div className="flex items-center gap-2 ml-auto">
+            <span>{user?.fullName}</span>
+            <Avatar
+            size={40}
+            src={user?.imageUrl}
+            style={{ 
+              cursor: "pointer",
+              backgroundColor: user?.imageUrl ? "transparent" : "#1890ff",
+              borderColor: "black"
             }}
+            icon={!user?.imageUrl && <UserAddOutlined />}
           >
-            {/* {currentUser?.imageUrl ? (
-      <img
-        src={user.imageUrl}
-        alt="User"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-    ) : (
-      <span>{user.fullName[0].toUpperCase()}</span> // Fallback to first letter (uppercase)
-    )} */}
-          </button>
+              {!user?.imageUrl && user?.fullName?.[0]?.toUpperCase()}
+            </Avatar>
+          </div>
         </Header>
         <Content
           style={{
