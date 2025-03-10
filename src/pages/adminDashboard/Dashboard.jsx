@@ -46,6 +46,7 @@ const Dashboard = () => {
         return <Applications />;
       case "reports":
         return <Typography.Title>Reports Content</Typography.Title>;
+      
       default:
         return <Typography.Title>Thank You!</Typography.Title>;
     }

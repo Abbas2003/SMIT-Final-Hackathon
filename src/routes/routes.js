@@ -26,5 +26,6 @@ export const AppRoutes = {
     getLoanRequests: BASE_URL + "api/v1/loan/get-user-loans",
     getAllLoanRequests: BASE_URL + "api/v1/loan/get-all-loans",
     updateLoanStatus: BASE_URL + "api/v1/loan/update-loan-status",
+    scheduleAppointment: BASE_URL + "api/v1/appointment/schedule",
 
 };
